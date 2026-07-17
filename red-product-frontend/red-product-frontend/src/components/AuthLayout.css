@@ -1,0 +1,160 @@
+.auth-screen {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg-dark);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-pattern {
+  position: absolute;
+  inset: 0;
+}
+
+.auth-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 72px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.auth-logo-icon {
+  display: inline-flex;
+}
+
+.auth-logo-text {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+}
+
+.auth-card {
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 6px;
+  padding: 32px 32px 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.auth-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 20px;
+}
+
+.auth-field {
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+}
+
+.auth-field input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 6px 2px;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.auth-field input::placeholder {
+  color: var(--placeholder);
+}
+
+.auth-field-error {
+  border-bottom-color: var(--stat-red);
+}
+
+.auth-error-text {
+  color: var(--stat-red);
+  font-size: 12px;
+  margin: -12px 0 14px;
+}
+
+.auth-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 22px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-checkbox input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--btn-dark);
+  cursor: pointer;
+}
+
+.auth-submit {
+  width: 100%;
+  background: var(--btn-dark);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.auth-submit:hover:not(:disabled) {
+  background: var(--btn-dark-hover);
+}
+
+.auth-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-links {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #e8e8e8;
+}
+
+.auth-links a,
+.auth-link-gold {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.auth-links a:hover,
+.auth-link-gold:hover {
+  color: var(--accent-gold-hover);
+}
+
+.auth-forgot {
+  display: block;
+  text-align: center;
+  margin-top: 18px;
+  color: var(--accent-gold);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.auth-subtext {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: -8px 0 20px;
+  line-height: 1.5;
+}
