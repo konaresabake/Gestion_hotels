@@ -128,6 +128,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
@@ -180,6 +183,9 @@ else:
 
 # URL du frontend, utilisée pour construire le lien de réinitialisation envoyé par email
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+
+# Brevo — envoi d'emails via API HTTP (prioritaire sur le SMTP, voir apps/users/email_utils.py)
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
 
 # Logging — affiche toujours le détail des erreurs 500 dans les logs (console Render),
 # même en production (DEBUG=False les masque par défaut sinon).
