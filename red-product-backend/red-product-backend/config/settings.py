@@ -19,6 +19,11 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
+# Render fournit automatiquement cette variable avec le domaine .onrender.com attribué
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 
 # Application definition
 
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -70,9 +76,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
-# Par défaut : SQLite (démarrage rapide en local).
-# Pour PostgreSQL, renseigne les variables DB_* dans le fichier .env
-if os.environ.get("DB_ENGINE") == "postgresql":
+# Priorité : DATABASE_URL (fourni automatiquement par Render en prod)
+#         > DB_ENGINE=postgresql avec DB_* individuelles (Postgres local via pgAdmin)
+#         > SQLite (par défaut, zéro configuration)
+import dj_database_url
+
+if os.environ.get("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.parse(
+            os.environ["DATABASE_URL"], conn_max_age=600, ssl_require=True
+        )
+    }
+elif os.environ.get("DB_ENGINE") == "postgresql":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -111,6 +126,13 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -150,10 +172,10 @@ if os.environ.get("EMAIL_HOST_USER") and os.environ.get("EMAIL_HOST_PASSWORD"):
     EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
     EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
     EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or EMAIL_HOST_USER
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@redproduct.example")
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or "no-reply@redproduct.example"
 
 # URL du frontend, utilisée pour construire le lien de réinitialisation envoyé par email
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")

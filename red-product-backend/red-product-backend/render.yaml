@@ -1,0 +1,27 @@
+databases:
+  - name: red-product-db
+    plan: free
+    databaseName: red_product
+    user: red_product_user
+
+services:
+  - type: web
+    name: red-product-backend
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: red-product-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      # À compléter manuellement dans le dashboard Render :
+      # ALLOWED_HOSTS, CORS_ALLOWED_ORIGINS, FRONTEND_URL,
+      # EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, DEFAULT_FROM_EMAIL
