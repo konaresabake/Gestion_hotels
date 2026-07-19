@@ -9,7 +9,8 @@ services:
     name: red-product-backend
     runtime: python
     plan: free
-    buildCommand: "./build.sh"
+    rootDir: red-product-backend/red-product-backend
+    buildCommand: "bash build.sh"
     startCommand: "gunicorn config.wsgi:application"
     envVars:
       - key: DATABASE_URL
