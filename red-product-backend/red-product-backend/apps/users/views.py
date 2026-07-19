@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import EmailMultiAlternatives
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import generics, permissions, status
@@ -8,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from .email_utils import send_password_reset_email
 from .models import Admin
 from .serializers import (
     EmailTokenObtainPairSerializer,
@@ -53,39 +53,7 @@ class ForgotPasswordView(APIView):
         token = token_generator.make_token(admin)
         reset_link = f"{settings.FRONTEND_URL}/reset-password?uid={uid}&token={token}"
 
-        text_body = (
-            f"Bonjour {admin.name},\n\n"
-            "Vous avez demandé la réinitialisation de votre mot de passe RED Product.\n"
-            f"Cliquez sur ce lien pour en choisir un nouveau : {reset_link}\n\n"
-            "Ce lien expire après usage. Si vous n'êtes pas à l'origine de cette demande, "
-            "ignorez simplement cet email."
-        )
-        html_body = f"""
-            <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
-              <p>Bonjour {admin.name},</p>
-              <p>Vous avez demandé la réinitialisation de votre mot de passe
-                 <strong>RED Product</strong>.</p>
-              <p style="text-align:center; margin: 28px 0;">
-                <a href="{reset_link}"
-                   style="background:#3d3d3d; color:#fff; padding:12px 24px;
-                          border-radius:4px; text-decoration:none; display:inline-block;">
-                  Réinitialiser mon mot de passe
-                </a>
-              </p>
-              <p style="color:#8b8b93; font-size:13px;">
-                Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
-              </p>
-            </div>
-        """
-
-        email = EmailMultiAlternatives(
-            subject="RED Product — Réinitialisation du mot de passe",
-            body=text_body,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[admin.email],
-        )
-        email.attach_alternative(html_body, "text/html")
-        email.send(fail_silently=False)
+        send_password_reset_email(admin, reset_link)
 
         return Response({"detail": "Si ce compte existe, un email a été envoyé."})
 
