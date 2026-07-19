@@ -126,3 +126,12 @@ class MeView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class AdminCountView(APIView):
+    """GET /api/auth/count/ — Nombre total d'Admins inscrits (carte 'Utilisateurs' du dashboard)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response({"count": Admin.objects.count()})
