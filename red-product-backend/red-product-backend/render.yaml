@@ -1,6 +1,7 @@
 databases:
   - name: red-product-db
     plan: free
+    region: frankfurt
     databaseName: red_product
     user: red_product_user
 
@@ -9,6 +10,7 @@ services:
     name: red-product-backend
     runtime: python
     plan: free
+    region: frankfurt
     rootDir: red-product-backend/red-product-backend
     buildCommand: "bash build.sh"
     startCommand: "gunicorn config.wsgi:application"
@@ -25,4 +27,5 @@ services:
         value: "3.11.9"
       # À compléter manuellement dans le dashboard Render :
       # ALLOWED_HOSTS, CORS_ALLOWED_ORIGINS, FRONTEND_URL, BREVO_API_KEY,
-      # DEFAULT_FROM_EMAIL
+      # DEFAULT_FROM_EMAIL, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
+      # CLOUDINARY_API_SECRET
