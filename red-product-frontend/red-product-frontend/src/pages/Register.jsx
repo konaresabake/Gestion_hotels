@@ -26,10 +26,23 @@ export default function Register() {
       await registerAdmin(form);
       navigate("/login");
     } catch (err) {
-      const detail =
-        err.response?.data?.email?.[0] ||
-        err.response?.data?.password?.[0] ||
-        "Impossible de créer le compte.";
+      let detail = "Impossible de créer le compte.";
+
+      if (err.response?.data) {
+        if (typeof err.response.data === "string") {
+          detail = err.response.data;
+        } else {
+          detail =
+            err.response.data?.email?.[0] ||
+            err.response.data?.password?.[0] ||
+            err.response.data?.detail ||
+            err.response.data?.message ||
+            detail;
+        }
+      } else if (err.message) {
+        detail = err.message;
+      }
+
       setError(detail);
     } finally {
       setLoading(false);
