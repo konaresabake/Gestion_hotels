@@ -29,7 +29,7 @@ export default function Dashboard() {
     { value: 40, label: "Messages", sublabel: "Je ne sais pas quoi mettre", color: "var(--stat-teal)", icon: "P" },
     { value: adminCount ?? "—", label: "Utilisateurs", sublabel: "Total des admins inscrits", color: "var(--stat-yellow)", icon: "◍" },
     { value: 25, label: "E-mails", sublabel: "Je ne sais pas quoi mettre", color: "var(--stat-red)", icon: "✉" },
-    { value: hotelCount ?? "—", label: "Hotels", sublabel: "Total des hôtels enregistrés", color: "var(--stat-purple2)", icon: "P" },
+    { value: hotelCount ?? "—", label: "Hotels", sublabel: "Total des hôtels enregistrés", color: "var(--stat-purple2)", icon: "P", to: "/hotels" },
     { value: "02", label: "Entités", sublabel: "Je ne sais pas quoi mettre", color: "var(--stat-blue)", icon: "◍" },
   ];
 

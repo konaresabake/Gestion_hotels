@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import "./StatCard.css";
 
-export default function StatCard({ value, label, sublabel, color, icon }) {
-  return (
-    <div className="stat-card">
+export default function StatCard({ value, label, sublabel, color, icon, to }) {
+  const content = (
+    <>
       <div className="stat-icon" style={{ background: color }}>
         {icon}
       </div>
@@ -12,6 +13,16 @@ export default function StatCard({ value, label, sublabel, color, icon }) {
         </p>
         <p className="stat-sublabel">{sublabel}</p>
       </div>
-    </div>
+    </>
   );
+
+  if (to) {
+    return (
+      <Link className="stat-card stat-card-link" to={to}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className="stat-card">{content}</div>;
 }
