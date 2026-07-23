@@ -25,7 +25,21 @@ export default function Topbar({ title }) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [searchValue, setSearchValue] = useState(
+    () => new URLSearchParams(window.location.search).get("search") || ""
+  );
   const dropdownRef = useRef(null);
+  const searchDebounce = useRef(null);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    if (searchDebounce.current) clearTimeout(searchDebounce.current);
+    searchDebounce.current = setTimeout(() => {
+      const trimmed = value.trim();
+      navigate(trimmed ? `/hotels?search=${encodeURIComponent(trimmed)}` : "/hotels");
+    }, 350);
+  };
 
   const loadUnreadCount = () => {
     fetchUnreadCount()
@@ -76,7 +90,7 @@ export default function Topbar({ title }) {
             <circle cx="6" cy="6" r="5" stroke="#9a9aa0" strokeWidth="1.4" />
             <line x1="9.7" y1="9.7" x2="13" y2="13" stroke="#9a9aa0" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
-          <input placeholder="Recherche" />
+          <input placeholder="Rechercher un hôtel..." value={searchValue} onChange={handleSearchChange} />
         </div>
 
         <div className="topbar-notifications" ref={dropdownRef}>
