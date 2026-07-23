@@ -31,7 +31,8 @@ class HotelViewSet(viewsets.ModelViewSet):
     ORDERING_FIELDS = {"price_per_night", "-price_per_night", "name", "-name", "created_at", "-created_at"}
 
     def get_queryset(self):
-        queryset = Hotel.objects.select_related("owner").all()
+        # Multi-tenant : chaque admin ne voit que ses propres hôtels
+        queryset = Hotel.objects.select_related("owner").filter(owner=self.request.user)
         params = self.request.query_params
 
         search = params.get("search", "").strip()
