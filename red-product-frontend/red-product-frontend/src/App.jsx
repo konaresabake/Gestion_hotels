@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import HotelList from "./pages/HotelList";
 import HotelDetail from "./pages/HotelDetail";
 import CreateHotel from "./pages/CreateHotel";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -49,6 +50,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <HotelDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

@@ -1,6 +1,6 @@
 import client from "./client";
 
-export const listHotels = () => client.get("/hotels/");
+export const listHotels = (params) => client.get("/hotels/", { params });
 
 export const getHotel = (id) => client.get(`/hotels/${id}/`);
 

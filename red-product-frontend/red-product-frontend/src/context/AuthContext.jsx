@@ -37,8 +37,14 @@ export function AuthProvider({ children }) {
     setAdmin(null);
   };
 
+  const refreshAdmin = async () => {
+    const { data } = await fetchMe();
+    setAdmin(data);
+    return data;
+  };
+
   return (
-    <AuthContext.Provider value={{ admin, loading, login, logout }}>
+    <AuthContext.Provider value={{ admin, loading, login, logout, refreshAdmin }}>
       {children}
     </AuthContext.Provider>
   );

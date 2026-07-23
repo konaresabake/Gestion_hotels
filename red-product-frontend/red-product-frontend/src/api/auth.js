@@ -13,4 +13,12 @@ export const resetPassword = (payload) =>
 
 export const fetchMe = () => client.get("/auth/me/");
 
+export const updateProfile = (formData) =>
+  client.patch("/auth/me/", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const changePassword = (payload) =>
+  client.post("/auth/change-password/", payload);
+
 export const fetchAdminCount = () => client.get("/auth/count/");

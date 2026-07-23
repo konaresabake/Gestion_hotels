@@ -24,7 +24,31 @@ class RegisterSerializer(serializers.ModelSerializer):
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = ["id", "name", "email", "created_at"]
+        fields = ["id", "name", "email", "avatar", "created_at"]
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    """Utilisé par PATCH /api/auth/me/ — un admin modifie son propre profil."""
+
+    class Meta:
+        model = Admin
+        fields = ["name", "email", "avatar"]
+
+    def validate_email(self, value):
+        qs = Admin.objects.exclude(pk=self.instance.pk).filter(email=value)
+        if qs.exists():
+            raise serializers.ValidationError("Cet email est déjà utilisé par un autre compte.")
+        return value
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, validators=[validate_password])
+
+    def validate_old_password(self, value):
+        if not self.context["request"].user.check_password(value):
+            raise serializers.ValidationError("Mot de passe actuel incorrect.")
+        return value
 
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):

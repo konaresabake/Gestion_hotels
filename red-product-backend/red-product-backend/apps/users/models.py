@@ -27,6 +27,7 @@ class Admin(AbstractUser):
     username = None
     name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
+    avatar = models.ImageField("Photo de profil", upload_to="avatars/", blank=True, null=True)
     accepted_terms = models.BooleanField(default=False)
     keep_logged_in = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

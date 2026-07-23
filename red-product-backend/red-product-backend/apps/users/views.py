@@ -3,6 +3,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import generics, permissions, status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -10,10 +11,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .email_utils import send_password_reset_email
 from .models import Admin
 from .serializers import (
+    AdminSerializer,
+    ChangePasswordSerializer,
     EmailTokenObtainPairSerializer,
     ForgotPasswordSerializer,
     RegisterSerializer,
     ResetPasswordSerializer,
+    UpdateProfileSerializer,
 )
 
 token_generator = PasswordResetTokenGenerator()
@@ -84,16 +88,35 @@ class ResetPasswordView(APIView):
         return Response({"detail": "Mot de passe mis à jour avec succès."})
 
 
-class MeView(generics.RetrieveAPIView):
-    """GET /api/auth/me/ — Infos de l'admin connecté (pour le header du dashboard)."""
+class MeView(generics.RetrieveUpdateAPIView):
+    """
+    GET   /api/auth/me/ — Infos de l'admin connecté (pour le header du dashboard).
+    PATCH /api/auth/me/ — Modifie son propre profil (nom, email, avatar).
+    """
 
-    from .serializers import AdminSerializer
-
-    serializer_class = AdminSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self):
         return self.request.user
+
+    def get_serializer_class(self):
+        if self.request.method in ("PATCH", "PUT"):
+            return UpdateProfileSerializer
+        return AdminSerializer
+
+
+class ChangePasswordView(APIView):
+    """POST /api/auth/change-password/ — change le mot de passe de l'admin connecté."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        request.user.set_password(serializer.validated_data["new_password"])
+        request.user.save()
+        return Response({"detail": "Mot de passe mis à jour avec succès."})
 
 
 class AdminCountView(APIView):

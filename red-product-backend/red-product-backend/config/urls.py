@@ -3,10 +3,13 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.static import serve
 
+from apps.hotels.urls import notification_urlpatterns
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("apps.users.urls")),
     path("api/hotels/", include("apps.hotels.urls")),
+    path("api/notifications/", include(notification_urlpatterns)),
 ]
 
 # On sert /media/ dans tous les cas (dev ET prod).
